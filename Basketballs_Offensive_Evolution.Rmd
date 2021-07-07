@@ -1,0 +1,76 @@
+---
+title: "Basketball's Offensive Evolution"
+author: "Ryan Thomas & Michael Dara"
+date: "7/6/2021"
+output: 
+  html_document:
+    theme: cosmo
+    toc: true
+    toc_float: true
+---
+
+
+```{r, include=FALSE, echo=FALSE}
+library(tidyverse)
+library(tidymodels)
+library(ggplot2)
+
+cbb <- read.csv("C:/Users/ryan3/Documents/MATH 488P/10_eda/data/cbb.csv")
+
+
+colnames(cbb)
+str(cbb)
+head(cbb)
+```
+
+## Introduction 
+
+ In the last couple of years, basketball viewers know that the game has turned out to be all about offense and scoring. This means that players are aiming to score way more, the tempo is faster, and the 3-point shot is the best type of shot now. From an overarching view, it can be seen that basketball has shifted into a “European style” of play. European style basketball is considered team oriented fundamental basketball, which focuses on high basketball IQ, fundamentals, team spacing and tough defense. This style is more and more fitting as years  have gone by, because players’ individual skill sets have improved drastically. In turn, players are expected to have all essential skills on the court, such as shooting, rebounding, and passing, rather than choosing players based on one specific strength they have. 
+  
+## Background Info  
+  
+ This trend is most prevalent in the NBA, and in recent years, the three-point barrage has reached an all time high. According to the Wall Street Journal, “Twenty years ago, 17% of NBA shots were threes. Ten years ago, it was 22%. Five years ago, it climbed to 28%. And it didn’t stop there. The 3-point rate across the entire league kept rising until it soared near another milestone in the first month of this season: It’s settling at almost exactly 40%”. Furthermore, now there are 15 teams (half of the league) that are shooting the ball at this rate! (https://www.wsj.com/articles/nba-3-point-revolution-11611190418)
+  
+  Seeing NBA players like Stephen Curry, who shoots three-pointers 10 feet behind the line, has influenced the younger generations to do the same. 
+  
+## Project Description and Analysis
+  
+ So, to dive deeper into this phenomenon, our group has decided to investigate whether or not this offensive trend trickles down into the NCAA level. In doing so, we can determine whether other basketball leagues have also adopted this European style of play. This analysis is important for all of basketball, because women basketball players and their respective leagues can benefit the most, in terms of viewership and increasing revenue. Finally, it influences the younger generations into following the same style with their own teams. 
+  
+  When starting our project, we needed to acquire a dataset that best represented the last couple of seasons in NCAA Men’s Basketball. With the help of Andrew Sundberg, a Kaggle user, we were able to import a dataset of all the teams’ statistics in Men’s Division 1 Basketball from 2013-2019. For those who are not familiar with Kaggle, it is essentially a website that has many datasets covering any kind of topic or subject you can think of. After researching our acquired dataset, we decided to tidy it up because there were too many teams and conferences to deal with. From a dataset of about 2,500 rows, we were able to narrow it down to a little over 500 rows. We did it by extracting the top 6 conferences in the NCAA, since these conferences contain more influential players like NBA prospects and coaches that have been well-known for years. In doing so, we focused our sample on teams that are heavily watched and more comparable amongst each other, reducing the variability in our statistical modeling. The 6 conferences we selected are as follows: Atlantic Coast Conference (ACC), Big Ten (B10), Big Twelve (B12), Big East (BE), Pac-12 (P12), and Southeastern Conference (SEC). 
+
+After extracting the necessary data from our set, we were able to properly view the variables associated with it. The main numerical variables that we analyzed were: adjusted tempo, 3-point shooting rate, free-throw rate, turnover-rate, effective field-goal rate, and wins-above-bubble rate (WAB). For those who are not aware, WAB is the number of games won above the bubble, the bubble being the cutoff for teams who do and don’t make the NCAA national tournament. Using these numerical variables, we were able to compare our categorical variables, which were conference, postseason seed, and year. 
+  
+  Once we determined all the possible variables to use, it was time to start formulating models to prove our point that the NCAA too has moved towards a European style of play. Our first major hypothesis was that a higher effective 3-point shooting rate would lead to a higher WAB, and in creating that, we made a scatterplot between those two variables. In order to better understand our plot, we separated the points on that plot by using color to determine postseason achievement.  In this context, postseason achievement is the place a team finished in the NCAA national tournament, with NA being teams that didn’t make the tournament. 
+ 
+
+```{r, echo=FALSE}
+cbb %>% select(X3P_O,POSTSEASON, WAB) %>% 
+  ggplot()+ geom_point(aes(x= X3P_O, y=WAB, color= POSTSEASON)) +ggtitle("3 point % and Postseason Acheivment")
+```
+
+  From the above plot, it is clear that 3-point shooting rate is mightily important in winning. The mean of the shooting rate is at about 35 percent, but the teams with a rate higher than that go above and beyond in terms of postseason achievement, with most of them making it to the round of 32 or higher. It can be noted that there are sub-par shooting teams that also make the tournament, but of all those teams, only 1 out of the 7 listed champions shot below that average rate. Obviously, shooting 3 pointers is not the only aspect to the game, as rebounding, free throws, and 2-pointers are also crucial to winning championships, but the point trying to be conveyed here is that 3-point shooting is now usually the most important aspect in winning basketball games.  If your team cannot shoot 3’s, it is very likely that you will lose most games, and you will lose them at an even greater deficit than previous years. Our reason for saying this is that tempo has also increased as the years have gone by. Tempo is the statistic measuring the time it takes one team to hold the ball during one possession. With a faster tempo, better shooting teams are shooting more 3’s, accumulating more points altogether. One prime example of this is the 2015-2016 Golden State Warriors, whose bread and butter was their 3-point European style of basketball. They played at an extremely high tempo, and at the same time, shot 3’s any chance they got. It also helps that they have 2 of the top shooters ever to play in the sport. Therefore, this team was blowing out its competition, and many teams since then have tried to adopt that style of play. 
+  
+  On the other hand, however, critics may complain that this increased tempo leads to more turnovers than scoring opportunities. Their additional arguments for this style of play is that it is a bad adaptation for amateur level basketball players. NBA players are not comparable to NCAA players, as there is a large talent disparity between the two, however, our research on the NCAA in recent years shows that these players are still able to control the flow of the game with an increase in tempo. To refute their argument, we devised a plot showing the relationship between tempo and turnover rate. 
+  
+```{r, echo=FALSE, warning=FALSE}
+cbb %>% select(TOR, ADJ_T) %>% ggplot() +
+  geom_point(aes(x=ADJ_T, y= TOR)) + geom_smooth(aes(x=ADJ_T, y= TOR))+ggtitle("The Relationship of Tempo and Turnovers")
+
+```
+
+  From the plot, it can be communicated that a higher adjusted tempo does not necessarily mean an increase in the turnover rate. As the tempo increases, there is a slight increase in turnover rate, but then the turnover rate steadily declines. Our highest turnover rate is associated with a measly tempo rate of 64, opposed to the highest tempo being 80, so it is fair to see that the critics are wrong in justifying that increased tempo leads to higher turnover rate. Also, teams with higher tempo’s may just be superior teams in terms of protecting the basketball, as it can be seen that they turn the ball over less than teams that have a lower tempo rate. However, that cannot conclude that NCAA teams with higher tempo’s are better altogether. 
+  
+```{r, echo=FALSE}
+cbb  %>% select(POSTSEASON, ADJ_T, X3P_O ) %>% 
+  ggplot()+ geom_point(aes(x=ADJ_T, y= X3P_O , color= POSTSEASON)) + ggtitle("3 point % and Tempo Correlation")
+
+```
+
+  As you can see above, comparing 3 point rates and tempo rates amongst postseason achievement displayed a very weak positive correlation between the two variables, and it was indicative that postseason achievement didn’t have much to do with tempo. However, from our previous research, it is pretty 	clear that a team’s 3-point rate is vital in adopting the European style of play. 
+  
+## Conclusion 
+
+  After thorough modeling and research with our given dataset, we have come to the conclusion that the NCAA has *slightly* adopted the NBA notion of playing a “European style” of basketball. The main reason for it only “slightly” adopting the style is due to the fact that there is a large talent gap between the NBA and lower level basketball leagues. NBA players shoot at a much higher rate than most NCAA athletes, so percentages don’t always line up with the way you would expect them to. In addition, other factors such as coaching and referees plays a part in allowing players to shoot more threes or play at a faster tempo. One big difference between the two is that the NCAA has a 30 second shot clock, opposed to the NBA’s 24 second shot clock, meaning that tempo will be lower on the NCAA side. On the bright side though, our modeling has shown us that players and teams are still trying to incorporate this style of play into their system. Our one grouped histogram on displaying tempo rates over the years has shown a steady increase, which is a good sign for the future. Finally, in the grand scheme of things, now that shooting has become more of an attraction than dunking and and-1’s, female leagues such as the WNBA and women’s NCAA can take advantage of this new style and brand it as their own, ultimately leading to more viewership and increased revenue. This is why we researched the adoption of European styled play into the NCAA. 
+
+	
